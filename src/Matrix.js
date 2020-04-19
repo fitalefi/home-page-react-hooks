@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
+import { useDynamicTransition } from './hooks';
 
 import MATRIX_FRAMES from './data/matrix';
 
@@ -6,18 +7,14 @@ const minimumDelay = 10;
 const minimumIncrement = 1;
 
 const Matrix = () => {
-  const [index, setIndex] = useState(0);
   const [delay, setDelay] = useState(500);
   const [increment, setIncrement] = useState(5);
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setIndex(
-        (storedIndex) => (storedIndex + increment) % MATRIX_FRAMES.length
-      );
-    }, delay);
-    return () => clearInterval(interval);
-  }, [delay, increment]);
+  const index = useDynamicTransition({
+    increment,
+    delay,
+    length: MATRIX_FRAMES.length,
+  });
 
   const updateDelay = (event) => {
     const delay = Number(event.target.value);
